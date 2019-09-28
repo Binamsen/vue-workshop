@@ -5,18 +5,19 @@
         <h4 class="title">Register to create a new account</h4>
       </div>
       <div class="content">
-        <form>
+        <form @submit.prevent="handleSubmit">
+          <p style="color:green;margin-bottom:30px;" v-if="successmessage">{{successmessage}}</p>
           <div class="form-group">
             <label class="label" for="name">Name</label>
-            <input type="text" class="form-control" id="name" placeholder="name" required />
+            <input v-model="name" type="text" class="form-control" id="name" placeholder="name" required />
           </div>
           <div class="form-group">
             <label class="label" for="email">Email address</label>
-            <input type="email" class="form-control" id="email" placeholder="email" required />
+            <input v-model="email" type="email" class="form-control" id="email" placeholder="email" required />
           </div>
           <div class="form-group">
             <label class="label" for="password">Password</label>
-            <input
+            <input v-model="password" 
               type="password"
               class="form-control"
               id="password"
@@ -33,8 +34,38 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
-  name: "RegistrationForm"
+  name: "RegistrationForm",
+  data(){
+    return{
+      name: "",
+      email: "",
+      password: "",
+      successmessage: ""
+    };
+  },
+  methods:{
+    async handleSubmit(){
+      try{
+        const response = await axios.post('https://jsonplaceholder.typicode.com/posts',{
+         name: this.name,
+         email: this.email,
+         password: this.password 
+        });
+        if(response){
+          this.successmessage= "Great....thankyou" + " " + this.name + "...your message has been submitted successfully",
+          this.name= "",
+          this.email= "",
+          this.password= "" 
+        }
+        console.log(response);
+
+      }catch(error){
+        console.log(error);
+      }
+    }
+  }
 };
 </script>
 
